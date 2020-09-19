@@ -34,7 +34,23 @@ async function addContact(name, email, phone) {
 
   await contactsData.push(newContact);
   await fs.writeFile(contactsPath, JSON.stringify(contactsData));
-  return fs.readFile(contactsPath, { encoding: "utf-8" });
+   fs.readFile(contactsPath, { encoding: "utf-8" });
+   return newContact
+}
+
+async function updateContact(id, body) {
+  const contact = await getContactById(id);
+  const updatedContact = { ...contact, ...body };
+
+  const contactsList = await listContacts();
+  const newContactsList = contactsList.map((contact) => {
+    if (contact.id === id) return updatedContact;
+    return contact;
+  });
+
+  await fs.writeFile(contactsPath, JSON.stringify(newContactsList));
+
+  return updatedContact;
 }
 
 module.exports = {
@@ -42,4 +58,5 @@ module.exports = {
   getContactById,
   removeContact,
   addContact,
+  updateContact
 };
