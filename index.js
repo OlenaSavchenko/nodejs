@@ -1,31 +1,36 @@
-const contacts = require("./db/contacts");
-const argv = require("yargs").argv;
+const contactsRouter = require("./api/contacts/router");
+const express = require("express");
+const morgan = require("morgan");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const fs = require("fs");
 
-function invokeAction({ action, id, name, email, phone }) {
-  switch (action) {
-    case "list":
-      contacts.listContacts().then((result) => console.table(result));
+dotenv.config();
+const app = express();
 
-      break;
+const PORT = process.env.PORT || 3000;
 
-    case "get":
-      contacts.getContactById(id).then((result) => console.log(result));
-      break;
+app.use(express.json());
+app.listen(PORT, () => console.log(`Server: ${PORT}`));
 
-    case "add":
-      contacts
-        .addContact(name, email, phone)
-        .then((result) => console.table(result));
+app.use(cors({ origin: "http://localhost:3000" }));
+app.use(morgan("dev"));
+app.use("/contacts", contactsRouter);
 
-      break;
-
-    case "remove":
-      contacts.removeContact(id).then((result) => console.table(result));
-      break;
-
-    default:
-      console.warn("\x1B[31m Unknown action type!");
-  }
-}
-
-invokeAction(argv);
+app.use(async (err, req, res, next) => {
+    if (err) {
+      let logs = await fs.readFile("errors.logs.json", { encoding: "utf-8" });
+      logs = JSON.parse(logs);
+      logs.push({
+        date: new Date().toISOString(),
+        method: req.method,
+        originalUrl: req.originalUrl,
+        message: err.message,
+      });
+      logs = JSON.stringify(logs);
+      await fs.writeFile("errors.logs.json", logs);
+    }
+    console.log('No error')
+  });
+  
+  
