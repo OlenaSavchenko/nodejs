@@ -34,7 +34,7 @@ async function addContact(name, email, phone) {
 
   await contactsData.push(newContact);
   await fs.writeFile(contactsPath, JSON.stringify(contactsData));
-   fs.readFile(contactsPath, { encoding: "utf-8" });
+  await fs.readFile(contactsPath, { encoding: "utf-8" });
    return newContact
 }
 
