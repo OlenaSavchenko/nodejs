@@ -16,6 +16,7 @@ const createContactController = async (req, res, next) => {
     const newContact = await ContactDB.createContact(body);
     res.status(201).json(newContact);
   } catch (e) {
+    console.log("Error message:", e);
     next(e);
   }
 };
@@ -26,6 +27,7 @@ const updateContactController = async (req, res, next) => {
     const updatedContact = await ContactDB.updateContact(id, data);
     res.status(200).json(updatedContact);
   } catch (e) {
+    console.log("Error message:", e);
     next(e);
   }
 };
@@ -33,15 +35,30 @@ const updateContactController = async (req, res, next) => {
 const deleteContactController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
+
     const deleteContact = await ContactDB.deleteContact(contactId);
-    res.status(200);
+    res.end();
   } catch (e) {
+    console.log("Error message:", e);
+    next(e);
+  }
+};
+
+const getContactByIdController = async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+
+    const contact = await ContactDB.getContactById(contactId);
+    res.json(contact);
+  } catch (e) {
+    console.log("Error message:", e);
     next(e);
   }
 };
 
 module.exports = {
   getContactsController,
+  getContactByIdController,
   createContactController,
   updateContactController,
   deleteContactController,

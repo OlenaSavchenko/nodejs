@@ -5,11 +5,13 @@ const {
   createContactController,
   updateContactController,
   deleteContactController,
+  getContactByIdController,
 } = require("./contacts.controller");
 
 const contactsRouter = Router();
 
 contactsRouter.get("/", getContactsController);
+contactsRouter.get("/:contactId", getContactByIdController);
 contactsRouter.post("/", createContactController);
 contactsRouter.patch("/", updateContactController);
 contactsRouter.delete("/:contactId", deleteContactController);

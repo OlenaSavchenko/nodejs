@@ -27,8 +27,7 @@ const contactSchema = new mongoose.Schema(
 
     token: {
       type: String,
-      required: true,
-      unique: true,
+      default: "",
     },
 
     subscription: {
@@ -42,10 +41,14 @@ const contactSchema = new mongoose.Schema(
 
 class Contact {
   constructor() {
-    this.db = mongoose.model("Contacts", contactSchema);
+    this.db = mongoose.model("contacts", contactSchema);
   }
   getContacts = async () => {
     return await this.db.find();
+  };
+
+  getContactById = async (contactId) => {
+    return await this.db.findById(contactId);
   };
 
   createContact = async (contactData) => {

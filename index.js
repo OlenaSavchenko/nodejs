@@ -14,6 +14,7 @@ const runServer = async () => {
     await mongoose.connect(process.env.DB_URI, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
+      useFindAndModify: false,
     });
     console.log("Database connection successful");
 
@@ -42,7 +43,7 @@ const runServer = async () => {
       console.log("No error");
     });
   } catch (error) {
-    console.log(error.message);
+    console.log("Error message:", error.message);
     process.exit(1);
   }
 };
