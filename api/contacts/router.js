@@ -11,7 +11,7 @@ const {
 const contactsRouter = Router();
 
 contactsRouter.get("/", getContactsController);
-contactsRouter.get("/:contactId", getContactByIdController);
+contactsRouter.get("/", getContactByIdController);
 contactsRouter.post("/", createContactController);
 contactsRouter.patch("/", updateContactController);
 contactsRouter.delete("/:contactId", deleteContactController);

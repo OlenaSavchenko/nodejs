@@ -4,10 +4,13 @@ const PORT = process.env.PORT || 3000;
 
 const express = require("express");
 const fs = require("fs").promise;
-const contactsRouter = require("./api/contacts/router");
 const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
+
+const contactsRouter = require("./api/contacts/router");
+const authRouter = require("./api/auth/auth.router");
+const usersRouter = require("./api/users/users.router");
 
 const runServer = async () => {
   try {
@@ -25,23 +28,11 @@ const runServer = async () => {
     app.use(cors({ origin: "http://localhost:3000" }));
     app.use(morgan("dev"));
 
+    app.use("/auth", authRouter);
+
     app.use("/contacts", contactsRouter);
 
-    app.use(async (err, req, res, next) => {
-      if (err) {
-        let logs = await fs.readFile("errors.logs.json", { encoding: "utf-8" });
-        logs = JSON.parse(logs);
-        logs.push({
-          date: new Date().toISOString(),
-          method: req.method,
-          originalUrl: req.originalUrl,
-          message: err.message,
-        });
-        logs = JSON.stringify(logs);
-        await fs.writeFile("errors.logs.json", logs);
-      }
-      console.log("No error");
-    });
+    app.use("/users", usersRouter);
   } catch (error) {
     console.log("Error message:", error.message);
     process.exit(1);
