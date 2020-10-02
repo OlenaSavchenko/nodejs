@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    email: String,
-    password: String,
+    email: { type: String, required: true, unique: true },
+
+    password: { type: String, required: true },
     subscription: {
       type: String,
       enum: ["free", "pro", "premium"],
@@ -19,7 +20,6 @@ class User {
     this.db = mongoose.model("users", userSchema);
   }
   createUser = async (userData) => {
-    console.log("createUser", userData);
     return await this.db.create(userData);
   };
 
@@ -34,6 +34,13 @@ class User {
   updateToken = async (id, newToken) => {
     return await this.db.findByIdAndUpdate(id, {
       token: newToken,
+    });
+  };
+
+  updateUserSubscription = async (userId, userData) => {
+    return await this.db.findByIdAndUpdate(userId, userData, {
+      new: true,
+      runValidators: true,
     });
   };
 }

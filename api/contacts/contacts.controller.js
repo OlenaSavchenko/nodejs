@@ -16,7 +16,6 @@ const createContactController = async (req, res, next) => {
     const newContact = await ContactDB.createContact(body);
     res.status(201).json(newContact);
   } catch (e) {
-    console.log("Error message:", e);
     next(e);
   }
 };
@@ -27,7 +26,6 @@ const updateContactController = async (req, res, next) => {
     const updatedContact = await ContactDB.updateContact(id, data);
     res.status(200).json(updatedContact);
   } catch (e) {
-    console.log("Error message:", e);
     next(e);
   }
 };
@@ -39,7 +37,6 @@ const deleteContactController = async (req, res, next) => {
     const deleteContact = await ContactDB.deleteContact(contactId);
     res.end();
   } catch (e) {
-    console.log("Error message:", e);
     next(e);
   }
 };
@@ -51,7 +48,6 @@ const getContactByIdController = async (req, res, next) => {
     const contact = await ContactDB.getContactById(contactId);
     res.json(contact);
   } catch (e) {
-    console.log("Error message:", e);
     next(e);
   }
 };

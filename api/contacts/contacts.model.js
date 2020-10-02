@@ -43,8 +43,11 @@ class Contact {
   constructor() {
     this.db = mongoose.model("contacts", contactSchema);
   }
-  getContacts = async () => {
-    return await this.db.find();
+
+  getContacts = async (query) => {
+    const { limit, page, ...otherQuery } = query;
+    const skipItems = (page - 1) * limit;
+    return await this.db.find(otherQuery).skip(skipItems).limit(Number(limit));
   };
 
   getContactById = async (contactId) => {
