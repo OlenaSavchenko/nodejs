@@ -26,7 +26,7 @@ const updateUserSubscriptionController = async (req, res, next) => {
     res.status(200).json({ subscription, email });
   } catch (e) {
     if (e) {
-      res.send("Value of subscription is invalid");
+      res.status(400).send("Value of subscription is invalid");
     }
     next(e);
   }
