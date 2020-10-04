@@ -5,6 +5,7 @@ const {
 const User = require("../users/users.model");
 const bcrypt = require("bcrypt");
 const { createVerificationToken } = require("../../services/token.service");
+const { avatar } = require("../../avatarCreator");
 
 const registrationController = async (req, res, next) => {
   try {
@@ -17,13 +18,23 @@ const registrationController = async (req, res, next) => {
       password,
       Number(process.env.SALT)
     );
+    const generateAvatarId = Date.now();
+    const variant = "female";
+    const image = await avatar.generate("email@example.com", variant);
+    const savedAvatar = await image
+      .png()
+      .toFile(`./public/images/${generateAvatarId}.png`);
+
+    const avatarURL = `http://localhost:3000/images/${generateAvatarId}.png`;
+
     await User.createUser({
       email,
       subscription,
       password: hashedPassword,
+      avatarURL,
     });
 
-    res.status(201).json({ email, subscription });
+    res.status(201).json({ email, subscription, avatarURL });
   } catch (e) {
     next(e);
   }

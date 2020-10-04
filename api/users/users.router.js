@@ -2,7 +2,12 @@ const { Router } = require("express");
 const {
   getCurrentUserController,
   updateUserSubscriptionController,
+  updateAvatarController,
 } = require("./users.controler");
+
+const {
+  avatarUploaderMiddleware,
+} = require("../middlewares/fileUploader.middleware");
 
 const { checkAuthTokenMiddleware } = require("../middlewares/auth.middlewares");
 
@@ -15,4 +20,10 @@ usersRouter.patch(
   updateUserSubscriptionController
 );
 
+usersRouter.patch(
+  "/avatars",
+  checkAuthTokenMiddleware,
+  avatarUploaderMiddleware,
+  updateAvatarController
+);
 module.exports = usersRouter;

@@ -20,7 +20,7 @@ const updateUserSubscriptionController = async (req, res, next) => {
 
     const newSubscriptionValue = req.body.subscription;
 
-    await User.updateUserSubscription(userId, {
+    await User.updateUserData(userId, {
       subscription: newSubscriptionValue,
     });
     res.status(200).json({ subscription, email });
@@ -32,7 +32,30 @@ const updateUserSubscriptionController = async (req, res, next) => {
   }
 };
 
+const updateAvatarController = async (req, res, next) => {
+  try {
+    const { userId } = req;
+    const {
+      user: { avatarURL },
+    } = req;
+
+    const {
+      file: { filename },
+    } = req;
+
+    const file = req.file;
+    const newAvatarUrl = `http://localhost:3000/images/${filename}`;
+    await User.updateUserData(userId, {
+      avatarURL: newAvatarUrl,
+    });
+    res.status(200).send(newAvatarUrl);
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getCurrentUserController,
   updateUserSubscriptionController,
+  updateAvatarController,
 };

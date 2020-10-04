@@ -7,6 +7,7 @@ const fs = require("fs").promise;
 const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const path = require("path");
 
 const contactsRouter = require("./api/contacts/router");
 const authRouter = require("./api/auth/auth.router");
@@ -22,7 +23,7 @@ const runServer = async () => {
     console.log("Database connection successful");
 
     const app = express();
-
+    app.use(express.static(path.resolve(__dirname, "public")));
     app.use(express.json());
     app.listen(PORT, () => console.log(`Server: ${PORT}`));
     app.use(cors({ origin: "http://localhost:3000" }));

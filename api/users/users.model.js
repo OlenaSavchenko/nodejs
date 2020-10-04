@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema(
       default: "free",
     },
     token: String,
+
+    avatarURL: String,
   },
   { versionKey: false }
 );
@@ -37,7 +39,7 @@ class User {
     });
   };
 
-  updateUserSubscription = async (userId, userData) => {
+  updateUserData = async (userId, userData) => {
     return await this.db.findByIdAndUpdate(userId, userData, {
       new: true,
       runValidators: true,
