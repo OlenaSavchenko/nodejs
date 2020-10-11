@@ -1,4 +1,5 @@
 const User = require("./users.model");
+const { generateNewAvatarUrl } = require("../../config");
 
 const getCurrentUserController = async (req, res, next) => {
   try {
@@ -44,7 +45,7 @@ const updateAvatarController = async (req, res, next) => {
     } = req;
 
     const file = req.file;
-    const newAvatarUrl = `http://localhost:3000/images/${filename}`;
+    const newAvatarUrl = generateNewAvatarUrl(filename);
     await User.updateUserData(userId, {
       avatarURL: newAvatarUrl,
     });

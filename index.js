@@ -1,6 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config();
-const PORT = process.env.PORT || 3000;
+const { PORT, HOST } = require("./config");
 
 const express = require("express");
 const fs = require("fs").promise;
@@ -26,7 +26,7 @@ const runServer = async () => {
     app.use(express.static(path.resolve(__dirname, "public")));
     app.use(express.json());
     app.listen(PORT, () => console.log(`Server: ${PORT}`));
-    app.use(cors({ origin: "http://localhost:3000" }));
+    app.use(cors({ origin: `${HOST}${PORT}` }));
     app.use(morgan("dev"));
 
     app.use("/auth", authRouter);

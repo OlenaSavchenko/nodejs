@@ -52,15 +52,15 @@ class Contact {
           subscription: sub,
         }
       : {};
+    const sortItems = { name: 1 };
+    const limitItems = Number(limit);
+    const itemsQuery = { ...otherQuery, ...subObject };
 
-    return await this.db
-      .find({
-        ...otherQuery,
-        ...subObject,
-      })
-      .skip(skipItems)
-      .limit(Number(limit))
-      .sort({ name: 1 });
+    return this.pagination(itemsQuery, skipItems, limitItems, sortItems);
+  };
+
+  pagination = async (query, skip, limit, sort) => {
+    return await this.db.find(query).skip(skip).limit(limit).sort(sort);
   };
 
   getContactById = async (contactId) => {

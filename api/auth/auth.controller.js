@@ -5,7 +5,13 @@ const {
 const User = require("../users/users.model");
 const bcrypt = require("bcrypt");
 const { createVerificationToken } = require("../../services/token.service");
-const { avatar } = require("../../avatarCreator");
+const {
+  avatar,
+  PORT,
+  HOST,
+  generateAvatarPath,
+  generateAvatarUrl,
+} = require("../../config");
 
 const registrationController = async (req, res, next) => {
   try {
@@ -18,14 +24,11 @@ const registrationController = async (req, res, next) => {
       password,
       Number(process.env.SALT)
     );
-    const generateAvatarId = Date.now();
+    const avatarId = Date.now();
     const variant = "female";
     const image = await avatar.generate("email@example.com", variant);
-    const savedAvatar = await image
-      .png()
-      .toFile(`./public/images/${generateAvatarId}.png`);
-
-    const avatarURL = `http://localhost:3000/images/${generateAvatarId}.png`;
+    const savedAvatar = await image.png().toFile(generateAvatarPath(avatarId));
+    const avatarURL = generateAvatarUrl(avatarId);
 
     await User.createUser({
       email,
@@ -53,10 +56,10 @@ const loginController = async (req, res, next) => {
     if (!isPasswordsEqual) {
       return res.status(401).send("Password is wrong");
     }
-    const access_token = await createVerificationToken({ id: user._id });
+    const accessToken = await createVerificationToken({ id: user._id });
 
     res.status(200).json({
-      token: access_token,
+      token: accessToken,
       user: { email: user.email, subscription: user.subscription },
     });
   } catch (e) {
