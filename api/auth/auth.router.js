@@ -3,6 +3,7 @@ const {
   registrationController,
   loginController,
   logoutController,
+  checkVerificationToken,
 } = require("./auth.controller");
 
 const { registrationValidatorMiddleware } = require("./auth.validator");
@@ -19,5 +20,7 @@ authRouter.post(
 authRouter.post("/login", registrationValidatorMiddleware, loginController);
 
 authRouter.post("/logout", checkAuthTokenMiddleware, logoutController);
+
+authRouter.get("/verify/:verificationToken", checkVerificationToken);
 
 module.exports = authRouter;
