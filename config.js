@@ -22,7 +22,7 @@ const sendVerificationEmail = async (verificationToken) => {
     from: "olsavchenko1@gmail.com", // Change to your verified sender
     subject: "Your verification token",
     text: "Your verification token:",
-    html: `http://localhost:3000/auth/verify/${verificationToken}`,
+    html: `${HOST}${PORT}/auth/verify/${verificationToken}`,
   };
   return await sgMail.send(msg);
 };
