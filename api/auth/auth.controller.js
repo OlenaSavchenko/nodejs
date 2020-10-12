@@ -11,9 +11,8 @@ const {
   avatar,
   generateAvatarPath,
   generateAvatarUrl,
+  sendVerificationEmail,
 } = require("../../config");
-
-const { sendVerificationEmail } = require("../../services/email.service");
 
 const registrationController = async (req, res, next) => {
   try {
