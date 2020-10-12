@@ -43,8 +43,24 @@ class Contact {
   constructor() {
     this.db = mongoose.model("contacts", contactSchema);
   }
-  getContacts = async () => {
-    return await this.db.find();
+
+  getContacts = async (query) => {
+    const { limit, page, sub, sort, ...otherQuery } = query;
+    const skipItems = (page - 1) * limit;
+    const subObject = sub
+      ? {
+          subscription: sub,
+        }
+      : {};
+    const sortItems = { name: 1 };
+    const limitItems = Number(limit);
+    const itemsQuery = { ...otherQuery, ...subObject };
+
+    return this.pagination(itemsQuery, skipItems, limitItems, sortItems);
+  };
+
+  pagination = async (query, skip, limit, sort) => {
+    return await this.db.find(query).skip(skip).limit(limit).sort(sort);
   };
 
   getContactById = async (contactId) => {
