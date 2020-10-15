@@ -1,16 +1,17 @@
 const {
   Types: { ObjectId },
 } = require("mongoose");
+const uuid = require("uuid");
+const bcrypt = require("bcrypt");
 
 const User = require("../users/users.model");
-const bcrypt = require("bcrypt");
+
 const { createVerificationToken } = require("../../services/token.service");
 const {
   avatar,
-  PORT,
-  HOST,
   generateAvatarPath,
   generateAvatarUrl,
+  sendVerificationEmail,
 } = require("../../config");
 
 const registrationController = async (req, res, next) => {
@@ -30,12 +31,17 @@ const registrationController = async (req, res, next) => {
     const savedAvatar = await image.png().toFile(generateAvatarPath(avatarId));
     const avatarURL = generateAvatarUrl(avatarId);
 
+    const verificationToken = uuid.v4();
+
     await User.createUser({
       email,
       subscription,
       password: hashedPassword,
       avatarURL,
+      verificationToken,
     });
+
+    sendVerificationEmail(verificationToken);
 
     res.status(201).json({ email, subscription, avatarURL });
   } catch (e) {
@@ -84,8 +90,25 @@ const logoutController = async (req, res, next) => {
   }
 };
 
+const checkVerificationToken = async (req, res, next) => {
+  try {
+    const { verificationToken } = req.params;
+    const user = await User.findUser({ verificationToken });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    await User.updateUserData(user._id, {
+      verificationToken: null,
+    });
+    return res.status(200).send("Succes");
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   registrationController,
   loginController,
   logoutController,
+  checkVerificationToken,
 };

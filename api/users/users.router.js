@@ -26,4 +26,5 @@ usersRouter.patch(
   avatarUploaderMiddleware,
   updateAvatarController
 );
+
 module.exports = usersRouter;
